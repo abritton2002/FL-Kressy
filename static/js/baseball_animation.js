@@ -154,7 +154,7 @@ class BaseballAnimation {
         this.line = new THREE.Mesh(geometry, material);
 
         // Align cylinder with spin axis
-        const defaultAxis = new THREE.Vector3(0, 1, 0); // Cylinder's default Y-axis
+        const defaultAxis = new THREE.Vector3(0, 1, 0); // Cylinder’s default Y-axis
         const quaternion = new THREE.Quaternion().setFromUnitVectors(defaultAxis, this.spinAxis);
         this.line.quaternion.copy(quaternion);
 
@@ -174,13 +174,9 @@ class BaseballAnimation {
         const spinRateZInput = document.getElementById(this.inputIds.z);
         const phiInput = document.getElementById(this.inputIds.phi);
         const thetaInput = document.getElementById(this.inputIds.theta);
-        
-        // Parse spin rates
         this.spinRateX = -parseFloat(spinRateXInput?.innerText) || 0;
         this.spinRateY = -parseFloat(spinRateYInput?.innerText) || 0;
         this.spinRateZ = -parseFloat(spinRateZInput?.innerText) || 0;
-
-        // Convert Phi and Theta to radians
         const phi = phiInput ? parseFloat(phiInput.innerText) * (Math.PI / 180) : 0;
         const theta = thetaInput ? parseFloat(thetaInput.innerText) * (Math.PI / 180) : 0;
 
@@ -194,7 +190,6 @@ class BaseballAnimation {
 
         // Normalize the spin axis
         this.spinAxis.normalize();
-
         this.createSpinAxisLine();
 
         if (!this.isAnimating) {
@@ -209,22 +204,21 @@ class BaseballAnimation {
         requestAnimationFrame(this.animate.bind(this));
 
         if (this.isAnimating) {
-            // Create a vector from the spin rates
+            const rotationSpeedX = (this.spinRateX / 60) * (2 * Math.PI) / 15000;
+            const rotationSpeedY = (this.spinRateY / 60) * (2 * Math.PI) / 15000;
+            const rotationSpeedZ = (this.spinRateZ / 60) * (2 * Math.PI) / 15000;
+
             const spinVector = new THREE.Vector3(
                 this.spinRateX, 
                 this.spinRateY, 
                 this.spinRateZ
             );
 
-            // Calculate the total rotation speed
-            const totalRotationSpeed = spinVector.length() * (2 * Math.PI) / 600000;
-
-            // Determine rotation direction
-            // Use the dot product with the spin axis to determine rotation direction
-            const rotationDirection = Math.sign(spinVector.dot(this.spinAxis));
-
-            // Rotate with the correct direction
-            this.sphere.rotateOnWorldAxis(this.spinAxis, rotationDirection * totalRotationSpeed);
+            console.log(rotationSpeedX);
+            console.log(spinVector)
+            this.sphere.rotateOnWorldAxis(new THREE.Vector3(1, 0, 0), rotationSpeedX);
+            this.sphere.rotateOnWorldAxis(new THREE.Vector3(0, 1, 0), rotationSpeedY);
+            this.sphere.rotateOnWorldAxis(new THREE.Vector3(0, 0, 1), rotationSpeedZ);
 
             this.renderer.render(this.scene, this.camera);
         }
