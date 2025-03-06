@@ -1,0 +1,106 @@
+2025-03-06 14:51:01,929 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://172.16.70.75:5000
+2025-03-06 14:51:01,931 - INFO - [33mPress CTRL+C to quit[0m
+2025-03-06 14:51:06,709 - INFO - 172.16.70.75 - - [06/Mar/2025 14:51:06] "GET / HTTP/1.1" 200 -
+2025-03-06 14:51:06,899 - INFO - 172.16.70.75 - - [06/Mar/2025 14:51:06] "GET /static/css/mocaphelper.main.css HTTP/1.1" 200 -
+2025-03-06 14:51:06,900 - INFO - 172.16.70.75 - - [06/Mar/2025 14:51:06] "GET /static/css/bootstrap-icons.css HTTP/1.1" 200 -
+2025-03-06 14:51:06,921 - INFO - 172.16.70.75 - - [06/Mar/2025 14:51:06] "GET /static/css/bootstrap.min.css HTTP/1.1" 200 -
+2025-03-06 14:51:06,932 - INFO - 172.16.70.75 - - [06/Mar/2025 14:51:06] "GET /static/js/baseball_animation.js HTTP/1.1" 200 -
+2025-03-06 14:51:07,593 - INFO - 172.16.70.75 - - [06/Mar/2025 14:51:07] "GET /static/js/baseball_texture.jpg HTTP/1.1" 200 -
+2025-03-06 14:51:07,674 - INFO - 172.16.70.75 - - [06/Mar/2025 14:51:07] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2025-03-06 14:51:55,655 - INFO - 172.16.70.75 - - [06/Mar/2025 14:51:55] "POST / HTTP/1.1" 200 -
+2025-03-06 14:51:55,702 - INFO - 172.16.70.75 - - [06/Mar/2025 14:51:55] "[36mGET /static/css/bootstrap.min.css HTTP/1.1[0m" 304 -
+2025-03-06 14:51:55,702 - INFO - 172.16.70.75 - - [06/Mar/2025 14:51:55] "[36mGET /static/js/baseball_animation.js HTTP/1.1[0m" 304 -
+2025-03-06 14:51:55,704 - INFO - 172.16.70.75 - - [06/Mar/2025 14:51:55] "[36mGET /static/css/mocaphelper.main.css HTTP/1.1[0m" 304 -
+2025-03-06 14:51:55,709 - INFO - 172.16.70.75 - - [06/Mar/2025 14:51:55] "[36mGET /static/css/bootstrap-icons.css HTTP/1.1[0m" 304 -
+2025-03-06 14:51:55,794 - INFO - 172.16.70.75 - - [06/Mar/2025 14:51:55] "[36mGET /static/js/baseball_texture.jpg HTTP/1.1[0m" 304 -
+2025-03-06 14:52:44,621 - INFO - Matched Pitchers in Heavy Pronation bucket: 200
+2025-03-06 14:52:44,621 - INFO - Matching Pitcher Details:
+2025-03-06 14:52:44,621 - INFO - Pitcher Match: {'pitcher': Decimal('657612'), 'release_speed': Decimal('92.0000'), 'release_spin_rate': Decimal('2186.0000'), 'vertical_break': Decimal('6.4800'), 'spin_efficiency': Decimal('0.96576100')}
+2025-03-06 14:52:44,622 - INFO - Pitcher Match: {'pitcher': Decimal('657612'), 'release_speed': Decimal('93.4000'), 'release_spin_rate': Decimal('2314.0000'), 'vertical_break': Decimal('7.3200'), 'spin_efficiency': Decimal('0.96915400')}
+2025-03-06 14:52:44,622 - INFO - Pitcher Match: {'pitcher': Decimal('666157'), 'release_speed': Decimal('93.8000'), 'release_spin_rate': Decimal('2292.0000'), 'vertical_break': Decimal('6.8400'), 'spin_efficiency': Decimal('0.97690300')}
+2025-03-06 14:52:44,622 - INFO - Pitcher Match: {'pitcher': Decimal('657612'), 'release_speed': Decimal('91.4000'), 'release_spin_rate': Decimal('2342.0000'), 'vertical_break': Decimal('7.2000'), 'spin_efficiency': Decimal('0.96294800')}
+2025-03-06 14:52:44,622 - INFO - Pitcher Match: {'pitcher': Decimal('453385'), 'release_speed': Decimal('93.8000'), 'release_spin_rate': Decimal('2196.0000'), 'vertical_break': Decimal('8.4864'), 'spin_efficiency': Decimal('0.97117900')}
+2025-03-06 14:52:44,622 - INFO - Pitcher Match: {'pitcher': Decimal('657612'), 'release_speed': Decimal('93.3000'), 'release_spin_rate': Decimal('2320.0000'), 'vertical_break': Decimal('5.5200'), 'spin_efficiency': Decimal('0.97733200')}
+2025-03-06 14:52:44,622 - INFO - Pitcher Match: {'pitcher': Decimal('657612'), 'release_speed': Decimal('90.3000'), 'release_spin_rate': Decimal('2274.0000'), 'vertical_break': Decimal('5.6400'), 'spin_efficiency': Decimal('0.96060400')}
+2025-03-06 14:52:44,623 - INFO - Pitcher Match: {'pitcher': Decimal('657612'), 'release_speed': Decimal('93.5000'), 'release_spin_rate': Decimal('2484.0000'), 'vertical_break': Decimal('7.4400'), 'spin_efficiency': Decimal('0.99583200')}
+2025-03-06 14:52:44,623 - INFO - Pitcher Match: {'pitcher': Decimal('690986'), 'release_speed': Decimal('92.9000'), 'release_spin_rate': Decimal('2232.0000'), 'vertical_break': Decimal('7.2000'), 'spin_efficiency': Decimal('0.96561400')}
+2025-03-06 14:52:44,623 - INFO - Pitcher Match: {'pitcher': Decimal('666157'), 'release_speed': Decimal('93.8000'), 'release_spin_rate': Decimal('2332.0000'), 'vertical_break': Decimal('6.8400'), 'spin_efficiency': Decimal('0.98043100')}
+2025-03-06 14:52:48,294 - INFO - Secondary pitch query took 3.59 seconds
+2025-03-06 14:52:48,294 - INFO - Found 30 potential secondary pitch types
+2025-03-06 14:52:48,302 - INFO - Pitch selection took 0.01 seconds
+2025-03-06 14:52:48,304 - INFO - Spin calculation took 0.00 seconds
+2025-03-06 14:52:48,306 - INFO - Total recommendation time: 37.71 seconds
+2025-03-06 14:52:48,314 - INFO - 172.16.70.75 - - [06/Mar/2025 14:52:48] "POST / HTTP/1.1" 200 -
+2025-03-06 14:52:48,366 - INFO - 172.16.70.75 - - [06/Mar/2025 14:52:48] "[36mGET /static/js/baseball_animation.js HTTP/1.1[0m" 304 -
+2025-03-06 14:52:48,366 - INFO - 172.16.70.75 - - [06/Mar/2025 14:52:48] "[36mGET /static/css/bootstrap.min.css HTTP/1.1[0m" 304 -
+2025-03-06 14:52:48,367 - INFO - 172.16.70.75 - - [06/Mar/2025 14:52:48] "[36mGET /static/css/bootstrap-icons.css HTTP/1.1[0m" 304 -
+2025-03-06 14:52:48,370 - INFO - 172.16.70.75 - - [06/Mar/2025 14:52:48] "[36mGET /static/css/mocaphelper.main.css HTTP/1.1[0m" 304 -
+2025-03-06 14:52:48,450 - INFO - 172.16.70.75 - - [06/Mar/2025 14:52:48] "[36mGET /static/js/baseball_texture.jpg HTTP/1.1[0m" 304 -
+2025-03-06 14:52:50,191 - INFO - 172.16.70.75 - - [06/Mar/2025 14:52:50] "POST / HTTP/1.1" 200 -
+2025-03-06 14:52:50,229 - INFO - 172.16.70.75 - - [06/Mar/2025 14:52:50] "[36mGET /static/css/bootstrap.min.css HTTP/1.1[0m" 304 -
+2025-03-06 14:52:50,230 - INFO - 172.16.70.75 - - [06/Mar/2025 14:52:50] "[36mGET /static/js/baseball_animation.js HTTP/1.1[0m" 304 -
+2025-03-06 14:52:50,232 - INFO - 172.16.70.75 - - [06/Mar/2025 14:52:50] "[36mGET /static/css/mocaphelper.main.css HTTP/1.1[0m" 304 -
+2025-03-06 14:52:50,233 - INFO - 172.16.70.75 - - [06/Mar/2025 14:52:50] "[36mGET /static/css/bootstrap-icons.css HTTP/1.1[0m" 304 -
+2025-03-06 14:52:50,290 - INFO - 172.16.70.75 - - [06/Mar/2025 14:52:50] "[36mGET /static/js/baseball_texture.jpg HTTP/1.1[0m" 304 -
+2025-03-06 14:53:14,159 - INFO - 172.16.70.75 - - [06/Mar/2025 14:53:14] "POST / HTTP/1.1" 200 -
+2025-03-06 14:53:14,203 - INFO - 172.16.70.75 - - [06/Mar/2025 14:53:14] "[36mGET /static/css/bootstrap.min.css HTTP/1.1[0m" 304 -
+2025-03-06 14:53:14,204 - INFO - 172.16.70.75 - - [06/Mar/2025 14:53:14] "[36mGET /static/css/mocaphelper.main.css HTTP/1.1[0m" 304 -
+2025-03-06 14:53:14,206 - INFO - 172.16.70.75 - - [06/Mar/2025 14:53:14] "[36mGET /static/css/bootstrap-icons.css HTTP/1.1[0m" 304 -
+2025-03-06 14:53:14,210 - INFO - 172.16.70.75 - - [06/Mar/2025 14:53:14] "[36mGET /static/js/baseball_animation.js HTTP/1.1[0m" 304 -
+2025-03-06 14:53:14,280 - INFO - 172.16.70.75 - - [06/Mar/2025 14:53:14] "[36mGET /static/js/baseball_texture.jpg HTTP/1.1[0m" 304 -
+2025-03-06 14:53:32,524 - INFO - 172.16.70.75 - - [06/Mar/2025 14:53:32] "POST / HTTP/1.1" 200 -
+2025-03-06 14:53:32,574 - INFO - 172.16.70.75 - - [06/Mar/2025 14:53:32] "[36mGET /static/css/mocaphelper.main.css HTTP/1.1[0m" 304 -
+2025-03-06 14:53:32,574 - INFO - 172.16.70.75 - - [06/Mar/2025 14:53:32] "[36mGET /static/css/bootstrap.min.css HTTP/1.1[0m" 304 -
+2025-03-06 14:53:32,574 - INFO - 172.16.70.75 - - [06/Mar/2025 14:53:32] "[36mGET /static/js/baseball_animation.js HTTP/1.1[0m" 304 -
+2025-03-06 14:53:32,578 - INFO - 172.16.70.75 - - [06/Mar/2025 14:53:32] "[36mGET /static/css/bootstrap-icons.css HTTP/1.1[0m" 304 -
+2025-03-06 14:53:32,644 - INFO - 172.16.70.75 - - [06/Mar/2025 14:53:32] "[36mGET /static/js/baseball_texture.jpg HTTP/1.1[0m" 304 -
+2025-03-06 14:53:56,831 - INFO - 172.16.70.75 - - [06/Mar/2025 14:53:56] "POST / HTTP/1.1" 200 -
+2025-03-06 14:53:56,875 - INFO - 172.16.70.75 - - [06/Mar/2025 14:53:56] "[36mGET /static/css/bootstrap.min.css HTTP/1.1[0m" 304 -
+2025-03-06 14:53:56,876 - INFO - 172.16.70.75 - - [06/Mar/2025 14:53:56] "[36mGET /static/js/baseball_animation.js HTTP/1.1[0m" 304 -
+2025-03-06 14:53:56,877 - INFO - 172.16.70.75 - - [06/Mar/2025 14:53:56] "[36mGET /static/css/bootstrap-icons.css HTTP/1.1[0m" 304 -
+2025-03-06 14:53:56,878 - INFO - 172.16.70.75 - - [06/Mar/2025 14:53:56] "[36mGET /static/css/mocaphelper.main.css HTTP/1.1[0m" 304 -
+2025-03-06 14:53:56,949 - INFO - 172.16.70.75 - - [06/Mar/2025 14:53:56] "[36mGET /static/js/baseball_texture.jpg HTTP/1.1[0m" 304 -
+2025-03-06 14:54:09,304 - INFO - 172.16.70.75 - - [06/Mar/2025 14:54:09] "POST / HTTP/1.1" 200 -
+2025-03-06 14:54:09,357 - INFO - 172.16.70.75 - - [06/Mar/2025 14:54:09] "[36mGET /static/css/bootstrap-icons.css HTTP/1.1[0m" 304 -
+2025-03-06 14:54:09,359 - INFO - 172.16.70.75 - - [06/Mar/2025 14:54:09] "[36mGET /static/css/mocaphelper.main.css HTTP/1.1[0m" 304 -
+2025-03-06 14:54:09,359 - INFO - 172.16.70.75 - - [06/Mar/2025 14:54:09] "[36mGET /static/css/bootstrap.min.css HTTP/1.1[0m" 304 -
+2025-03-06 14:54:09,360 - INFO - 172.16.70.75 - - [06/Mar/2025 14:54:09] "[36mGET /static/js/baseball_animation.js HTTP/1.1[0m" 304 -
+2025-03-06 14:54:09,427 - INFO - 172.16.70.75 - - [06/Mar/2025 14:54:09] "[36mGET /static/js/baseball_texture.jpg HTTP/1.1[0m" 304 -
+2025-03-06 14:54:48,529 - INFO - Matched Pitchers in Heavy Pronation bucket: 200
+2025-03-06 14:54:48,529 - INFO - Matching Pitcher Details:
+2025-03-06 14:54:48,529 - INFO - Pitcher Match: {'pitcher': Decimal('453385'), 'release_speed': Decimal('91.2000'), 'release_spin_rate': Decimal('2025.0000'), 'vertical_break': Decimal('6.2268'), 'spin_efficiency': Decimal('0.97961300')}
+2025-03-06 14:54:48,529 - INFO - Pitcher Match: {'pitcher': Decimal('640455'), 'release_speed': Decimal('90.9000'), 'release_spin_rate': Decimal('2066.0000'), 'vertical_break': Decimal('7.5432'), 'spin_efficiency': Decimal('0.98043900')}
+2025-03-06 14:54:48,530 - INFO - Pitcher Match: {'pitcher': Decimal('606424'), 'release_speed': Decimal('91.8000'), 'release_spin_rate': Decimal('2085.0000'), 'vertical_break': Decimal('7.6920'), 'spin_efficiency': Decimal('0.96098100')}
+2025-03-06 14:54:48,530 - INFO - Pitcher Match: {'pitcher': Decimal('543045'), 'release_speed': Decimal('88.4000'), 'release_spin_rate': Decimal('2256.0000'), 'vertical_break': Decimal('7.5300'), 'spin_efficiency': Decimal('0.98109300')}
+2025-03-06 14:54:48,530 - INFO - Pitcher Match: {'pitcher': Decimal('640455'), 'release_speed': Decimal('89.2000'), 'release_spin_rate': Decimal('2019.0000'), 'vertical_break': Decimal('6.4596'), 'spin_efficiency': Decimal('0.98124000')}
+2025-03-06 14:54:48,530 - INFO - Pitcher Match: {'pitcher': Decimal('640455'), 'release_speed': Decimal('90.7000'), 'release_spin_rate': Decimal('2045.0000'), 'vertical_break': Decimal('6.1044'), 'spin_efficiency': Decimal('0.96514800')}
+2025-03-06 14:54:48,530 - INFO - Pitcher Match: {'pitcher': Decimal('657612'), 'release_speed': Decimal('91.0000'), 'release_spin_rate': Decimal('2200.0000'), 'vertical_break': Decimal('7.4400'), 'spin_efficiency': Decimal('0.97312200')}
+2025-03-06 14:54:48,530 - INFO - Pitcher Match: {'pitcher': Decimal('640455'), 'release_speed': Decimal('90.8000'), 'release_spin_rate': Decimal('2003.0000'), 'vertical_break': Decimal('7.6500'), 'spin_efficiency': Decimal('0.99959300')}
+2025-03-06 14:54:48,530 - INFO - Pitcher Match: {'pitcher': Decimal('570257'), 'release_speed': Decimal('89.8000'), 'release_spin_rate': Decimal('2054.0000'), 'vertical_break': Decimal('7.8108'), 'spin_efficiency': Decimal('0.99982600')}
+2025-03-06 14:54:48,531 - INFO - Pitcher Match: {'pitcher': Decimal('657612'), 'release_speed': Decimal('90.7000'), 'release_spin_rate': Decimal('2243.0000'), 'vertical_break': Decimal('6.2400'), 'spin_efficiency': Decimal('0.98965200')}
+2025-03-06 14:54:51,213 - INFO - Secondary pitch query took 2.60 seconds
+2025-03-06 14:54:51,213 - INFO - Found 30 potential secondary pitch types
+2025-03-06 14:54:51,220 - INFO - Pitch selection took 0.01 seconds
+2025-03-06 14:54:51,222 - INFO - Spin calculation took 0.00 seconds
+2025-03-06 14:54:51,223 - INFO - Total recommendation time: 35.70 seconds
+2025-03-06 14:54:51,229 - INFO - 172.16.70.75 - - [06/Mar/2025 14:54:51] "POST / HTTP/1.1" 200 -
+2025-03-06 14:54:51,277 - INFO - 172.16.70.75 - - [06/Mar/2025 14:54:51] "[36mGET /static/css/bootstrap.min.css HTTP/1.1[0m" 304 -
+2025-03-06 14:54:51,278 - INFO - 172.16.70.75 - - [06/Mar/2025 14:54:51] "[36mGET /static/js/baseball_animation.js HTTP/1.1[0m" 304 -
+2025-03-06 14:54:51,279 - INFO - 172.16.70.75 - - [06/Mar/2025 14:54:51] "[36mGET /static/css/bootstrap-icons.css HTTP/1.1[0m" 304 -
+2025-03-06 14:54:51,282 - INFO - 172.16.70.75 - - [06/Mar/2025 14:54:51] "[36mGET /static/css/mocaphelper.main.css HTTP/1.1[0m" 304 -
+2025-03-06 14:54:51,353 - INFO - 172.16.70.75 - - [06/Mar/2025 14:54:51] "[36mGET /static/js/baseball_texture.jpg HTTP/1.1[0m" 304 -
+2025-03-06 14:54:52,965 - INFO - 172.16.70.75 - - [06/Mar/2025 14:54:52] "POST / HTTP/1.1" 200 -
+2025-03-06 14:54:53,008 - INFO - 172.16.70.75 - - [06/Mar/2025 14:54:53] "[36mGET /static/css/bootstrap.min.css HTTP/1.1[0m" 304 -
+2025-03-06 14:54:53,009 - INFO - 172.16.70.75 - - [06/Mar/2025 14:54:53] "[36mGET /static/css/bootstrap-icons.css HTTP/1.1[0m" 304 -
+2025-03-06 14:54:53,011 - INFO - 172.16.70.75 - - [06/Mar/2025 14:54:53] "[36mGET /static/css/mocaphelper.main.css HTTP/1.1[0m" 304 -
+2025-03-06 14:54:53,012 - INFO - 172.16.70.75 - - [06/Mar/2025 14:54:53] "[36mGET /static/js/baseball_animation.js HTTP/1.1[0m" 304 -
+2025-03-06 14:54:53,083 - INFO - 172.16.70.75 - - [06/Mar/2025 14:54:53] "[36mGET /static/js/baseball_texture.jpg HTTP/1.1[0m" 304 -
+2025-03-06 15:04:43,320 - INFO - 172.16.70.75 - - [06/Mar/2025 15:04:43] "POST / HTTP/1.1" 200 -
+2025-03-06 15:04:43,359 - INFO - 172.16.70.75 - - [06/Mar/2025 15:04:43] "[36mGET /static/css/bootstrap-icons.css HTTP/1.1[0m" 304 -
+2025-03-06 15:04:43,360 - INFO - 172.16.70.75 - - [06/Mar/2025 15:04:43] "[36mGET /static/js/baseball_animation.js HTTP/1.1[0m" 304 -
+2025-03-06 15:04:43,364 - INFO - 172.16.70.75 - - [06/Mar/2025 15:04:43] "[36mGET /static/css/bootstrap.min.css HTTP/1.1[0m" 304 -
+2025-03-06 15:04:43,365 - INFO - 172.16.70.75 - - [06/Mar/2025 15:04:43] "[36mGET /static/css/mocaphelper.main.css HTTP/1.1[0m" 304 -
+2025-03-06 15:04:43,513 - INFO - 172.16.70.75 - - [06/Mar/2025 15:04:43] "[36mGET /static/js/baseball_texture.jpg HTTP/1.1[0m" 304 -

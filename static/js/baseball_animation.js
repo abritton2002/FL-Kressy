@@ -187,9 +187,9 @@ class BaseballAnimation {
         // Convert spherical coordinates to Cartesian
         // Adjust the conversion to match the coordinate system in the paper
         this.spinAxis.set(
-            Math.sin(theta) * Math.cos(phi),
-            Math.sin(theta) * Math.sin(phi),
-            Math.cos(theta)
+            Math.sin(theta) * Math.cos(phi),    // x remains the same
+            Math.cos(theta),                    // y is now cos(theta)
+            Math.sin(theta) * Math.sin(phi)     // z is now sin(theta) * sin(phi)
         );
 
         // Normalize the spin axis
