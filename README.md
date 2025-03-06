@@ -10,7 +10,4 @@ Instructions from the Shell:
 4. python app.py
 5. CTRL + click the IP address posted in the opened shell
 
-Instructions from the File Explorer:
-1. git clone https://github.com/abritton2002/FL-Kressy
-2. click pitch_rec.bat
-3. CTRL + click the IP address posted in the opened shell
+Alternatively, click pitch_rec.bat in the directory to after cloning the directory to skip to step 5.
