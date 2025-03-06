@@ -53,6 +53,18 @@
                                 <table class="table table-sm table-hover mb-0" style="padding:10%;">
                                     <tr>
                                         <td>
+                                            <label for="level">Level:</label>
+                                            <div class="d-flex justify-content-end gap-2">
+                                                <input type="radio" class="btn-check" name="level" id="level_mlb" value="MLB" {% if level == "MLB" %}checked{% endif %}>
+                                                <label class="btn btn-outline-primary" for="level_mlb">MLB</label>
+                                                <input type="radio" class="btn-check" name="level" id="level_college" value="College" {% if level == "College" %}checked{% endif %}>
+                                                <label class="btn btn-outline-primary" for="level_college">College</label>
+                                            </div>
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td>
                                             <label for="pitch_hand">Pitch Hand:</label>
                                             <div class="d-flex justify-content-end gap-2">
                                                 <input type="radio" class="btn-check" name="pitch_hand" id="pitch_handl" value="L" {% if pitch_hand == "L" %}checked{% endif %}>
