@@ -154,7 +154,7 @@ class BaseballAnimation {
         this.line = new THREE.Mesh(geometry, material);
 
         // Align cylinder with spin axis
-        const defaultAxis = new THREE.Vector3(0, 1, 0); // Cylinder’s default Y-axis
+        const defaultAxis = new THREE.Vector3(0, 1, 0); // Cylinder's default Y-axis
         const quaternion = new THREE.Quaternion().setFromUnitVectors(defaultAxis, this.spinAxis);
         this.line.quaternion.copy(quaternion);
 
@@ -172,17 +172,28 @@ class BaseballAnimation {
         const spinRateXInput = document.getElementById(this.inputIds.x);
         const spinRateYInput = document.getElementById(this.inputIds.y);
         const spinRateZInput = document.getElementById(this.inputIds.z);
+        const phiInput = document.getElementById(this.inputIds.phi);
+        const thetaInput = document.getElementById(this.inputIds.theta);
+        
+        // Parse spin rates
         this.spinRateX = -parseFloat(spinRateXInput?.innerText) || 0;
         this.spinRateY = -parseFloat(spinRateYInput?.innerText) || 0;
         this.spinRateZ = -parseFloat(spinRateZInput?.innerText) || 0;
 
-        this.spinAxis.set(this.spinRateX, this.spinRateY, this.spinRateZ);
-        const magnitude = this.spinAxis.length();
-        if (magnitude === 0) {
-            this.spinAxis.set(0, 0, 1);
-        } else {
-            this.spinAxis.normalize();
-        }
+        // Convert Phi and Theta to radians
+        const phi = phiInput ? parseFloat(phiInput.innerText) * (Math.PI / 180) : 0;
+        const theta = thetaInput ? parseFloat(thetaInput.innerText) * (Math.PI / 180) : 0;
+
+        // Convert spherical coordinates to Cartesian
+        // Adjust the conversion to match the coordinate system in the paper
+        this.spinAxis.set(
+            Math.sin(theta) * Math.cos(phi),
+            Math.sin(theta) * Math.sin(phi),
+            Math.cos(theta)
+        );
+
+        // Normalize the spin axis
+        this.spinAxis.normalize();
 
         this.createSpinAxisLine();
 
@@ -198,13 +209,16 @@ class BaseballAnimation {
         requestAnimationFrame(this.animate.bind(this));
 
         if (this.isAnimating) {
-            const rotationSpeedX = (this.spinRateX / 60) * (2 * Math.PI) / 30000;
-            const rotationSpeedY = (this.spinRateY / 60) * (2 * Math.PI) / 30000;
-            const rotationSpeedZ = (this.spinRateZ / 60) * (2 * Math.PI) / 30000;
+            // Calculate total rotation speed
+            // Reduce spin speed further and ensure correct rotation direction
+            const totalRotationSpeed = Math.sqrt(
+                Math.pow(this.spinRateX, 2) + 
+                Math.pow(this.spinRateY, 2) + 
+                Math.pow(this.spinRateZ, 2)
+            ) * (2 * Math.PI) / 600000; // Further reduced divisor
 
-            this.sphere.rotateOnWorldAxis(new THREE.Vector3(1, 0, 0), rotationSpeedX);
-            this.sphere.rotateOnWorldAxis(new THREE.Vector3(0, 1, 0), rotationSpeedY);
-            this.sphere.rotateOnWorldAxis(new THREE.Vector3(0, 0, 1), rotationSpeedZ);
+            // Rotate in the opposite direction to match physical spin
+            this.sphere.rotateOnWorldAxis(this.spinAxis, -totalRotationSpeed);
 
             this.renderer.render(this.scene, this.camera);
         }
