@@ -1,1 +1,0 @@
-@python.exe "%~dp0Scripts\pip.exe" %*
