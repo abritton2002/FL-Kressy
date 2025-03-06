@@ -1,0 +1,878 @@
+// main.js
+// Basic JS to show how we might periodically refresh images, filter cameras, etc.
+
+// Make updateTagsViaAPI available globally
+let updateTagsViaAPI;
+
+document.addEventListener("DOMContentLoaded", function() {
+  // Keep track of last successful status for each camera
+  const cameraStates = new Map();
+  const STATUS_THRESHOLD = 20000; // 20 seconds threshold before considering a camera offline
+
+  // Load active tags on page load
+  async function loadActiveTags() {
+    try {
+      const response = await fetch("/get_active_tags");
+      if (response.ok) {
+        const data = await response.json();
+        
+        // Update the UI with the current tag values
+        updateTagsUI(data.grip, data.pitch, data.cue);
+      }
+    } catch (error) {
+      console.error('Error loading active tags:', error);
+    }
+  }
+
+  // Function to update the UI with tag values
+  function updateTagsUI(grip, pitch, cue) {
+    // Update grip UI
+    if (grip) {
+      const gripInput = document.querySelector(`input[name="grip"][id="grip${grip}"]`);
+      if (gripInput) {
+        gripInput.checked = true;
+        document.getElementById('selectedGrip').textContent = `Grip: ${grip}`;
+      }
+    }
+    
+    // Update pitch UI
+    if (pitch) {
+      const pitchInput = document.querySelector(`input[name="pitch"][id="pitch${pitch}"]`);
+      if (pitchInput) {
+        pitchInput.checked = true;
+        document.getElementById('selectedPitch').textContent = `Pitch: ${pitch}`;
+      }
+    }
+    
+    // Update cue UI
+    if (cue) {
+      const cueInput = document.getElementById('cueInput');
+      if (cueInput) {
+        cueInput.value = cue;
+      }
+      document.getElementById('selectedCue').textContent = `Cue: ${cue || 'None'}`;
+    }
+  }
+
+  // Save active tags whenever they change
+  async function saveActiveTags(grip, pitch, cue) {
+    try {
+      const formData = new FormData();
+      formData.append('grip', grip || '');
+      formData.append('pitch', pitch || '');
+      formData.append('cue', cue || '');
+      
+      const response = await fetch("/save_active_tags", {
+        method: 'POST',
+        body: formData
+      });
+      
+      if (!response.ok) {
+        throw new Error('Failed to save tags');
+      }
+    } catch (error) {
+      console.error('Error saving active tags:', error);
+    }
+  }
+
+  // Handle grip selection
+  document.querySelectorAll('input[name="grip"]').forEach(input => {
+    input.addEventListener('change', async (e) => {
+      const selectedGrip = e.target.id.replace('grip', '');
+      document.getElementById('selectedGrip').textContent = `Grip: ${selectedGrip}`;
+      await saveActiveTags(
+        selectedGrip,
+        document.querySelector('input[name="pitch"]:checked')?.id.replace('pitch', ''),
+        document.getElementById('selectedCue').textContent.replace('Cue: ', '')
+      );
+    });
+  });
+
+  // Handle pitch selection
+  document.querySelectorAll('input[name="pitch"]').forEach(input => {
+    input.addEventListener('change', async (e) => {
+      const selectedPitch = e.target.id.replace('pitch', '');
+      document.getElementById('selectedPitch').textContent = `Pitch: ${selectedPitch}`;
+      await saveActiveTags(
+        document.querySelector('input[name="grip"]:checked')?.id.replace('grip', ''),
+        selectedPitch,
+        document.getElementById('selectedCue').textContent.replace('Cue: ', '')
+      );
+    });
+  });
+
+  // Handle cue save
+  document.getElementById('saveCueBtn').addEventListener('click', async () => {
+    const cueText = document.getElementById('cueInput').value;
+    if (!cueText) return;  // Don't save empty cues
+    
+    try {
+      // Save the active tags first
+      await saveActiveTags(
+        document.querySelector('input[name="grip"]:checked')?.id.replace('grip', ''),
+        document.querySelector('input[name="pitch"]:checked')?.id.replace('pitch', ''),
+        cueText
+      );
+      
+      // Only update UI after successful save
+      document.getElementById('selectedCue').textContent = `Cue: ${cueText}`;
+      document.getElementById('cueInput').value = '';
+      document.getElementById('cueOptions').classList.add('d-none');
+      
+      // Force an immediate radar readings update
+      await updateRadarReadings();
+    } catch (error) {
+      console.error('Error saving cue:', error);
+      alert('Error saving cue. Please try again.');
+    }
+  });
+
+  // Tag button handlers
+  document.getElementById('gripBtn').addEventListener('click', () => {
+    document.getElementById('gripOptions').classList.toggle('d-none');
+    document.getElementById('pitchOptions').classList.add('d-none');
+    document.getElementById('cueOptions').classList.add('d-none');
+  });
+
+  document.getElementById('pitchBtn').addEventListener('click', () => {
+    document.getElementById('pitchOptions').classList.toggle('d-none');
+    document.getElementById('gripOptions').classList.add('d-none');
+    document.getElementById('cueOptions').classList.add('d-none');
+  });
+
+  document.getElementById('cueBtn').addEventListener('click', () => {
+    document.getElementById('cueOptions').classList.toggle('d-none');
+    document.getElementById('gripOptions').classList.add('d-none');
+    document.getElementById('pitchOptions').classList.add('d-none');
+  });
+
+  // Add reset button handler
+  document.getElementById('resetTagsBtn').addEventListener('click', async () => {
+    try {
+      // Reset UI
+      document.querySelector('input[name="grip"][id="gripNone"]').checked = true;
+      document.querySelector('input[name="pitch"][id="pitchNone"]').checked = true;
+      document.getElementById('selectedGrip').textContent = 'Grip: None';
+      document.getElementById('selectedPitch').textContent = 'Pitch: None';
+      document.getElementById('selectedCue').textContent = 'Cue: None';
+      document.getElementById('cueInput').value = '';
+      
+      // Save reset tags to backend
+      await saveActiveTags('None', 'None', '');
+      
+      // Force an immediate radar readings update
+      await updateRadarReadings();
+    } catch (error) {
+      console.error('Error resetting tags:', error);
+      alert('Error resetting tags. Please try again.');
+    }
+  });
+
+  // Refresh images every 750ms to reduce camera load
+  function updateCameraImages() {
+    const images = document.querySelectorAll(".camera-image-container");
+    const stamp = new Date().getTime();
+    images.forEach(img => {
+      if (img) {
+        const baseSrc = img.src.split('?')[0];
+        img.src = baseSrc + "?ts=" + stamp;
+      }
+    });
+  }
+
+  // Helper function to update UI elements with debouncing
+  function updateUIElement(element, newState, currentState, updateFn) {
+    if (!element || newState === currentState) return;
+    
+    if (!element.hasAttribute('data-updating')) {
+      element.setAttribute('data-updating', 'true');
+      element.classList.add('fade');
+      
+      setTimeout(() => {
+        updateFn();
+        element.classList.remove('fade');
+        element.removeAttribute('data-updating');
+      }, 150);
+    }
+  }
+
+  // Update camera statuses
+  async function updateCameraStatuses() {
+    try {
+      const response = await fetch("/poll_cameras.json");
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const cameras = await response.json();
+      const currentTime = Date.now();
+      
+      // Update each camera's status
+      cameras.forEach(camera => {
+        const cameraElement = document.querySelector(`[data-camera-dns="${camera.dns}"]`);
+        if (!cameraElement) return;
+
+        // Get or initialize camera state
+        let prevState = cameraStates.get(camera.dns) || {
+          net_up: false,
+          storage_mounted: false,
+          save_level: 0,
+          buffer_level: 0,
+          unsaved_count: 0,
+          last_successful_poll: 0
+        };
+
+        // Update state with new values if the poll was successful
+        if (!camera.error) {
+          prevState = {
+            ...prevState,
+            ...camera,
+            last_successful_poll: camera.last_successful_poll * 1000 // Convert to milliseconds
+          };
+          cameraStates.set(camera.dns, prevState);
+        }
+
+        // Determine if camera should be considered offline based on last successful poll
+        const isOffline = currentTime - prevState.last_successful_poll > STATUS_THRESHOLD;
+        const effectiveNetUp = !isOffline && prevState.net_up;
+
+        // Update network status badge with debouncing
+        const netStatusBadge = cameraElement.querySelector('.net-status');
+        updateUIElement(
+          netStatusBadge,
+          effectiveNetUp,
+          netStatusBadge.classList.contains('bg-success'),
+          () => {
+            netStatusBadge.className = `badge net-status ${effectiveNetUp ? 'bg-success' : 'bg-danger'}`;
+            netStatusBadge.textContent = effectiveNetUp ? 'Net Up' : 'Net Down';
+          }
+        );
+
+        // Update storage status badge with debouncing
+        const storageBadge = cameraElement.querySelector('.storage-status');
+        updateUIElement(
+          storageBadge,
+          prevState.storage_mounted,
+          storageBadge.classList.contains('bg-success'),
+          () => {
+            storageBadge.className = `badge storage-status ${prevState.storage_mounted ? 'bg-success' : 'bg-danger'}`;
+            storageBadge.textContent = prevState.storage_mounted ? 'Storage OK' : (prevState.storage_error || 'Storage Error');
+          }
+        );
+
+        // Update unsaved count with debouncing
+        const unsavedBadge = cameraElement.querySelector('.unsaved-count');
+        if (unsavedBadge) {
+          const currentCount = parseInt(unsavedBadge.textContent);
+          updateUIElement(
+            unsavedBadge,
+            prevState.unsaved_count,
+            currentCount,
+            () => {
+              unsavedBadge.textContent = prevState.unsaved_count;
+            }
+          );
+        }
+
+        // Update camera info with debouncing
+        const infoDiv = cameraElement.querySelector('.camera-info');
+        if (infoDiv) {
+          const newInfo = `
+            <div>${prevState.filename_pattern || ''}</div>
+            <div>
+              FPS: ${Math.round(prevState.frame_rate || 0)}
+              T: ${(prevState.duration || 0).toFixed(1)}s
+              Pre: ${Math.round(prevState.pretrigger || 0)}%
+              ISO: ${Math.round(prevState.iso || 0)}
+            </div>
+          `;
+          if (newInfo !== infoDiv.innerHTML) {
+            updateUIElement(
+              infoDiv,
+              newInfo,
+              infoDiv.innerHTML,
+              () => {
+                infoDiv.innerHTML = newInfo;
+              }
+            );
+          }
+        }
+
+        // Update progress bars with debouncing and smooth transitions
+        const saveLevel = cameraElement.querySelector('.save-level');
+        const saveLevelText = saveLevel?.parentElement.querySelector('.position-absolute');
+        if (saveLevel && saveLevelText) {
+          const savePct = prevState.save_level || 0;
+          updateUIElement(
+            saveLevel,
+            savePct,
+            parseFloat(saveLevel.style.width),
+            () => {
+              saveLevel.style.transition = 'width 0.5s ease-in-out';
+              saveLevel.style.width = `${savePct}%`;
+              saveLevel.textContent = '';
+              saveLevelText.textContent = `Save Level: ${Math.round(savePct)}%`;
+            }
+          );
+        }
+
+        const bufferLevel = cameraElement.querySelector('.buffer-level');
+        const bufferLevelText = bufferLevel?.parentElement.querySelector('.position-absolute');
+        if (bufferLevel && bufferLevelText) {
+          const bufferPct = prevState.buffer_level || 0;
+          updateUIElement(
+            bufferLevel,
+            bufferPct,
+            parseFloat(bufferLevel.style.width),
+            () => {
+              bufferLevel.style.transition = 'width 0.5s ease-in-out';
+              bufferLevel.style.width = `${bufferPct}%`;
+              bufferLevel.textContent = '';
+              bufferLevelText.textContent = `Pre-Trigger Buffer: ${Math.round(bufferPct)}%`;
+            }
+          );
+        }
+      });
+    } catch (error) {
+      console.error("Error updating camera statuses:", error);
+    }
+  }
+
+  // Function to format date consistently
+  function formatDate(dateStr) {
+    if (!dateStr) {
+      return 'No Date';
+    }
+    
+    try {
+      // Try to parse the ISO date string
+      const date = new Date(dateStr);
+      
+      // Check if date is valid
+      if (isNaN(date.getTime())) {
+        return 'Invalid Date';
+      }
+      
+      // Format the date with shorter format
+      return date.toLocaleString(undefined, {
+        month: 'numeric',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit'
+      }).replace(',', ' -');
+    } catch (e) {
+      console.error('Error formatting date:', e);
+      return 'Invalid Date';
+    }
+  }
+
+  // Function to fetch and update radar readings
+  async function fetchRadarReadings() {
+    try {
+      const response = await fetch('/get_radar_readings');
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const data = await response.json();
+      updateRadarReadingsTable(data.readings);
+    } catch (error) {
+      console.error('Error fetching radar readings:', error);
+    }
+  }
+
+  // Initial fetch and setup interval for radar readings
+  fetchRadarReadings();
+  setInterval(fetchRadarReadings, 2000);
+
+  // Video modal cleanup
+  const videoModal = document.getElementById('videoModal');
+  if (videoModal) {
+    videoModal.addEventListener('hidden.bs.modal', function () {
+      const video = document.getElementById('pitchVideo');
+      const loadingSpinner = document.getElementById('videoLoadingSpinner');
+      const errorMessage = document.getElementById('videoError');
+      
+      if (video) {
+        video.pause();
+        video.querySelectorAll('source').forEach(source => {
+          source.src = '';
+        });
+        video.load();
+        video.classList.add('d-none');
+      }
+      
+      // Reset states
+      loadingSpinner.classList.remove('d-none');
+      errorMessage.classList.add('d-none');
+    });
+  }
+
+  // Initial athlete name fetch
+  async function updateAthleteName() {
+    try {
+      // First try to get from configurations - this is the source of truth
+      const configResponse = await fetch("/get_configuration_value/athlete_name");
+      if (configResponse.ok) {
+        const configData = await configResponse.json();
+        if (configData.value) {
+          const currentAthleteSpan = document.getElementById('currentAthlete');
+          if (currentAthleteSpan) {
+            currentAthleteSpan.textContent = configData.value;
+          }
+          return;
+        }
+      }
+      
+      // Only if no config value exists, try radar readings
+      const radarResponse = await fetch("/get_radar_readings");
+      if (radarResponse.ok) {
+        const radarData = await radarResponse.json();
+        if (radarData.readings && radarData.readings.length > 0) {
+          const athleteName = radarData.readings[0].athletename;
+          const currentAthleteSpan = document.getElementById('currentAthlete');
+          if (currentAthleteSpan) {
+            currentAthleteSpan.textContent = athleteName;
+          }
+          // Also save this to configuration for future use
+          await fetch("/save_athlete", {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: new URLSearchParams({
+              'athlete_name': athleteName,
+              'traq_id': radarData.readings[0].traqid || '109751'
+            })
+          });
+        }
+      }
+    } catch (error) {
+      console.error("Error updating athlete name:", error);
+    }
+  }
+
+  // Function to update autotrigger status
+  async function updateAutotriggerStatus() {
+    try {
+      const response = await fetch("/get_autotrigger_status");
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const data = await response.json();
+      const statusElement = document.getElementById("autotriggerStatus");
+      if (statusElement) {
+        statusElement.textContent = data.status;
+        statusElement.className = data.status === "ACTIVE" ? "text-success" : "text-danger";
+      }
+    } catch (error) {
+      console.error("Error updating autotrigger status:", error);
+      const statusElement = document.getElementById("autotriggerStatus");
+      if (statusElement) {
+        statusElement.textContent = "Error";
+        statusElement.className = "text-danger";
+      }
+    }
+  }
+
+  // Function to toggle autotrigger
+  async function toggleAutotrigger() {
+    try {
+      const response = await fetch("/toggle_autotrigger", {
+        method: "POST"
+      });
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      await updateAutotriggerStatus();
+    } catch (error) {
+      console.error("Error toggling autotrigger:", error);
+    }
+  }
+
+  // Initial updates
+  updateCameraStatuses();
+  updateAthleteName();  // Add initial athlete name update
+  
+  // Set up polling intervals with reduced rates and exponential backoff for errors
+  const INITIAL_INTERVAL = 2000;  // Start at 2 seconds
+  const MAX_INTERVAL = 10000;     // Max 10 seconds
+  let currentInterval = INITIAL_INTERVAL;
+  let consecutiveErrors = 0;
+  
+  // Helper for random timing offsets
+  const randomOffset = () => Math.random() * 500;
+  
+  function getNextInterval() {
+    if (consecutiveErrors > 0) {
+      // Exponential backoff with max
+      return Math.min(INITIAL_INTERVAL * Math.pow(1.5, consecutiveErrors), MAX_INTERVAL);
+    }
+    return INITIAL_INTERVAL;
+  }
+  
+  async function pollWithBackoff(pollFn, errorMessage) {
+    try {
+      await pollFn();
+      consecutiveErrors = 0;
+      currentInterval = INITIAL_INTERVAL;
+    } catch (error) {
+      console.error(errorMessage, error);
+      consecutiveErrors++;
+      currentInterval = getNextInterval();
+    }
+    // Schedule next poll with current interval
+    setTimeout(() => pollWithBackoff(pollFn, errorMessage), currentInterval + randomOffset());
+  }
+  
+  // Start polling with backoff
+  pollWithBackoff(updateCameraStatuses, "Error updating camera statuses:");
+  pollWithBackoff(updateAthleteName, "Error updating athlete name:");
+  
+  // Keep image updates more frequent but with randomization
+  setInterval(updateCameraImages, 1000 + randomOffset());
+  
+  // Autotrigger status can be checked less frequently
+  setInterval(updateAutotriggerStatus, 5000);
+
+  // Set up autotrigger button click handler
+  const toggleEdgerBtn = document.getElementById("toggleEdgerBtn");
+  if (toggleEdgerBtn) {
+    toggleEdgerBtn.addEventListener("click", toggleAutotrigger);
+  }
+
+  // Save athlete info with proper camera updates
+  document.getElementById('saveAthleteBtn')?.addEventListener('click', async () => {
+    const athleteName = document.getElementById('athleteName')?.value?.trim() || '';
+    const traqId = document.getElementById('traqId')?.value?.trim() || '';
+    const saveButton = document.getElementById('saveAthleteBtn');
+    const currentAthleteSpan = document.getElementById('currentAthlete');
+    
+    if (!saveButton) return;
+    if (!athleteName) {
+      alert('Athlete name is required');
+      return;
+    }
+    
+    const originalButtonHtml = saveButton.innerHTML;
+    
+    try {
+      // Disable button and show spinner
+      saveButton.disabled = true;
+      saveButton.innerHTML = `
+        <span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
+        <span>Saving...</span>
+      `;
+      
+      const response = await fetch("/save_athlete", {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: new URLSearchParams({
+          'athlete_name': athleteName,
+          'traq_id': traqId
+        })
+      });
+      
+      const data = await response.json();
+      
+      if (response.ok) {
+        // Verify the save was successful using the verification data
+        if (data.verification?.saved_name !== athleteName) {
+          throw new Error('Athlete name verification failed - saved name does not match');
+        }
+        
+        if (currentAthleteSpan) {
+          currentAthleteSpan.textContent = athleteName;
+        }
+        
+        // Clear form fields
+        const nameInput = document.getElementById('athleteName');
+        const traqInput = document.getElementById('traqId');
+        if (nameInput) nameInput.value = '';
+        if (traqInput) traqInput.value = '';
+        
+        // Force immediate updates
+        await Promise.all([
+          updateCameraStatuses(),
+          updateAthleteName()  // Re-fetch to verify
+        ]);
+      } else {
+        throw new Error(data.message || 'Failed to save athlete info');
+      }
+    } catch (error) {
+      console.error('Error saving athlete info:', error);
+      alert(error.message || 'Error saving athlete info. Please try again.');
+    } finally {
+      // Re-enable button and restore original text
+      if (saveButton) {
+        saveButton.disabled = false;
+        saveButton.innerHTML = originalButtonHtml;
+      }
+    }
+  });
+
+  // Load active tags on page load
+  loadActiveTags();
+
+  // Function to update radar readings table
+  function updateRadarReadingsTable(readings) {
+    const tbody = $('#radarReadingsBody');
+    tbody.empty();
+    
+    readings.forEach(reading => {
+      const row = $('<tr>');
+      
+      // Feedback buttons cell
+      const feedbackCell = $('<td>').addClass('d-flex gap-1');
+      const feedbackBtns = [
+        { type: 1, icon: 'bi-hand-thumbs-up-fill', class: 'thumbs-up', title: 'Good Pitch' },
+        { type: 2, icon: 'bi-hand-thumbs-down-fill', class: 'thumbs-down', title: 'Bad Pitch' },
+        { type: 3, icon: 'bi-exclamation-circle-fill', class: 'flag', title: 'Flag for Review' }
+      ].map(btn => {
+        const icon = $('<i>')
+          .addClass(`bi ${btn.icon} feedback-btn ${btn.class}`)
+          .attr('data-feedback-type', btn.type)
+          .attr('data-radar-id', reading.id);
+        
+        // Set active state if this is the current feedback
+        if (parseInt(reading.feedback) === btn.type) {
+          icon.addClass('active');
+        }
+        
+        return icon;
+      });
+      
+      feedbackCell.append(feedbackBtns);
+      row.append(feedbackCell);
+      
+      // Add other cells
+      row.append($('<td>').text(reading.athletename));
+      row.append($('<td>').text(reading.velocity)); // Simplified velocity cell
+      row.append($('<td>').text(formatDate(reading.pitime)));
+      row.append($('<td>').text(reading.pitch || 'None'));
+      row.append($('<td>').text(reading.grip || 'None'));
+      row.append($('<td>').text(reading.cue || ''));
+      
+      // Video cell
+      const videoCell = $('<td>');
+      if (reading.actual_filename) {
+        videoCell.append(
+          $('<i>')
+            .addClass('bi bi-play-circle video-icon')
+            .attr('data-video-url', reading.video_url)
+            .attr('data-video-name', reading.actual_filename)
+        );
+      }
+      row.append(videoCell);
+      
+      tbody.append(row);
+    });
+  }
+  
+  // Handle feedback button clicks
+  $('#radarReadingsBody').on('click', '.feedback-btn', async function() {
+    const btn = $(this);
+    const radarId = btn.data('radar-id');
+    const feedbackType = btn.data('feedback-type');
+    const row = btn.closest('tr');
+    
+    // Toggle active state
+    const wasActive = btn.hasClass('active');
+    
+    try {
+      // If clicking the same button that's active, set feedback to 0
+      // If clicking a different button, set to that button's feedback type
+      const newFeedback = wasActive ? 0 : feedbackType;
+      
+      const response = await fetch('/update_pitch_feedback', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: new URLSearchParams({
+          radar_id: radarId,
+          feedback: newFeedback
+        })
+      });
+      
+      if (!response.ok) {
+        throw new Error('Failed to update feedback');
+      }
+      
+      const data = await response.json();
+      console.log('Feedback updated successfully:', data);
+      
+      // Update UI to reflect the change
+      row.find('.feedback-btn').removeClass('active');
+      if (newFeedback !== 0) {
+        btn.addClass('active');
+      }
+      
+    } catch (error) {
+      console.error('Error updating feedback:', error);
+      alert('Failed to update feedback. Please try again.');
+    }
+  });
+
+  // Handle video icon clicks
+  $('#radarReadingsBody').on('click', '.video-icon', function() {
+    const videoUrl = $(this).data('video-url');
+    const videoName = $(this).data('video-name');
+    const video = document.getElementById('pitchVideo');
+    const loadingSpinner = document.getElementById('videoLoadingSpinner');
+    const errorMessage = document.getElementById('videoError');
+    const downloadLink = document.getElementById('videoDownloadLink');
+    const modal = new bootstrap.Modal(document.getElementById('videoModal'));
+    
+    // Get athlete name and velocity from the row
+    const row = $(this).closest('tr');
+    const athleteName = row.find('td:eq(1)').text();
+    const velocity = row.find('td:eq(2)').text();
+    const pitch = row.find('td:eq(4)').text();
+    const grip = row.find('td:eq(5)').text();
+    
+    // Update modal title with pipe delimiters
+    document.getElementById('videoModalLabel').textContent = `${athleteName} | ${velocity} mph | ${pitch} | ${grip}`;
+    
+    // Reset mute button text
+    $('#toggleMuteBtn').html('<i class="bi bi-volume-mute-fill"></i> Unmute');
+    
+    // Reset states
+    video.classList.add('d-none');
+    loadingSpinner.classList.remove('d-none');
+    errorMessage.classList.add('d-none');
+    
+    // Set video sources
+    video.querySelectorAll('source').forEach(source => {
+      source.src = videoUrl;
+    });
+    
+    // Set download link
+    downloadLink.href = videoUrl;
+    downloadLink.download = videoName;
+    
+    // Show modal
+    modal.show();
+    
+    // Load video
+    video.load();
+    video.oncanplay = function() {
+      video.classList.remove('d-none');
+      loadingSpinner.classList.add('d-none');
+      // Explicitly call play() to ensure autoplay works across all browsers
+      video.play().catch(e => {
+        console.warn('Autoplay failed:', e);
+        // Some browsers require user interaction before autoplay
+        // The video controls will still be visible for manual play
+      });
+      
+      // Unmute the video after a short delay
+      setTimeout(() => {
+        video.muted = false;
+      }, 500);
+    };
+    
+    video.onerror = function() {
+      loadingSpinner.classList.add('d-none');
+      errorMessage.classList.remove('d-none');
+    };
+  });
+
+  // Stop video playback when modal is closed
+  $('#videoModal').on('hidden.bs.modal', function () {
+    const video = document.getElementById('pitchVideo');
+    if (video) {
+      video.pause();
+      video.currentTime = 0;
+    }
+  });
+
+  // Handle mute/unmute button
+  $('#toggleMuteBtn').on('click', function() {
+    const video = document.getElementById('pitchVideo');
+    const btn = $(this);
+    
+    if (video) {
+      // Toggle muted state
+      video.muted = !video.muted;
+      
+      // Update button text and icon
+      if (video.muted) {
+        btn.html('<i class="bi bi-volume-mute-fill"></i> Unmute');
+      } else {
+        btn.html('<i class="bi bi-volume-up-fill"></i> Mute');
+      }
+    }
+  });
+
+  // New function to update tags via the API
+  updateTagsViaAPI = async function(tagData) {
+    try {
+      // Add request time if not provided
+      if (!tagData.request_time) {
+        tagData.request_time = new Date().toISOString();
+      }
+      
+      const response = await fetch("/api/update_tags", {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(tagData)
+      });
+      
+      if (!response.ok) {
+        throw new Error(`Failed to update tags: ${response.statusText}`);
+      }
+      
+      const data = await response.json();
+      
+      if (data.status === 'success') {
+        // Update UI with the new tag values
+        updateTagsUI(data.tags.grip, data.tags.pitch, data.tags.cue);
+        
+        console.log('Tags updated successfully via API');
+        return data.tags;
+      } else {
+        throw new Error(data.message || 'Unknown error');
+      }
+    } catch (error) {
+      console.error('Error updating tags via API:', error);
+      throw error;
+    }
+  };
+
+  // Set up periodic polling for tag updates (every 5 seconds)
+  setInterval(() => {
+    loadActiveTags();
+  }, 5000);
+  
+  // Initial load of active tags
+  loadActiveTags();
+  
+  // Example function to demonstrate API tag updates
+  window.exampleApiTagUpdate = async function(pitch, grip, cue) {
+    try {
+      const tagData = {
+        request_time: new Date().toISOString()
+      };
+      
+      // Only include fields that are provided
+      if (pitch) tagData.pitch = pitch;
+      if (grip) tagData.grip = grip;
+      if (cue) tagData.cue = cue;
+      
+      const result = await updateTagsViaAPI(tagData);
+      console.log('Tag update result:', result);
+      return result;
+    } catch (error) {
+      console.error('Error in example tag update:', error);
+      alert(`Failed to update tags: ${error.message}`);
+    }
+  };
+  
+  // Add this to the console log so users know it's available
+  console.log('You can use window.exampleApiTagUpdate(pitch, grip, cue) to test the API tag update functionality');
+});
+  
