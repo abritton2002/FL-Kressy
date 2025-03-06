@@ -1,0 +1,2 @@
+data/TM_2024_reg_szn.csv filter=lfs diff=lfs merge=lfs -text
+* !text !filter !merge !diff
