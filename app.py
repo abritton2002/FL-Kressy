@@ -42,15 +42,19 @@ def home():
                 "spin_efficiency": float(request.form.get("spin_efficiency")),
             }
 
+            session['level'] = request.form.get("level")
             form_data = session['form_data']
             # Fetch pitch data based on session information
-            df = pc.recommend_secondary_pitches(**form_data)
+            if session['level'] == 'MLB':
+                df = pc.recommend_secondary_pitches(**form_data)
+            else:
+                df = pc.college_recommend_secondary_pitches(**form_data)
             
             if len(df) > 0:
                 no_results=1
                 session['recommendations'] = df.to_dict()
                 session['target_variations'] = df['pitch_type_cons']
-                return render_template('calculator.html', target_variations=session['target_variations'],  **form_data, no_results=0)
+                return render_template('calculator.html', target_variations=session['target_variations'],  **form_data, no_results=0, level=session['level'])
             else:
                 return render_template('calculator.html',  **form_data, no_results=1)
         
@@ -73,7 +77,7 @@ def home():
             new_df['spin_axis_theta'] = new_df['spin_axis_theta'].astype(float).round(2)
             new_df['spin_axis_phi'] = new_df['spin_axis_phi'].astype(float).round(2)
             new_dict = {key: value[0] if value else None for key, value in new_df.to_dict(orient="list").items()}
-            return render_template('calculator.html', **form_data, **new_dict, target_variation=session['target_variation'], target_variations=session['target_variations'])
+            return render_template('calculator.html', **form_data, **new_dict, target_variation=session['target_variation'], target_variations=session['target_variations'], level=session['level'])
     
         else:
             form_data = {
