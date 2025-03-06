@@ -209,16 +209,22 @@ class BaseballAnimation {
         requestAnimationFrame(this.animate.bind(this));
 
         if (this.isAnimating) {
-            // Calculate total rotation speed
-            // Reduce spin speed further and ensure correct rotation direction
-            const totalRotationSpeed = Math.sqrt(
-                Math.pow(this.spinRateX, 2) + 
-                Math.pow(this.spinRateY, 2) + 
-                Math.pow(this.spinRateZ, 2)
-            ) * (2 * Math.PI) / 600000; // Further reduced divisor
+            // Create a vector from the spin rates
+            const spinVector = new THREE.Vector3(
+                this.spinRateX, 
+                this.spinRateY, 
+                this.spinRateZ
+            );
 
-            // Rotate in the opposite direction to match physical spin
-            this.sphere.rotateOnWorldAxis(this.spinAxis, -totalRotationSpeed);
+            // Calculate the total rotation speed
+            const totalRotationSpeed = spinVector.length() * (2 * Math.PI) / 600000;
+
+            // Determine rotation direction
+            // Use the dot product with the spin axis to determine rotation direction
+            const rotationDirection = Math.sign(spinVector.dot(this.spinAxis));
+
+            // Rotate with the correct direction
+            this.sphere.rotateOnWorldAxis(this.spinAxis, rotationDirection * totalRotationSpeed);
 
             this.renderer.render(this.scene, this.camera);
         }
