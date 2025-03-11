@@ -2451,3 +2451,61 @@
 2025-03-11 13:07:13,063 - INFO - 172.16.71.56 - - [11/Mar/2025 13:07:13] "[36mGET /static/css/bootstrap.min.css HTTP/1.1[0m" 304 -
 2025-03-11 13:07:13,065 - INFO - 172.16.71.56 - - [11/Mar/2025 13:07:13] "[36mGET /static/css/bootstrap-icons.css HTTP/1.1[0m" 304 -
 2025-03-11 13:07:13,117 - INFO - 172.16.71.56 - - [11/Mar/2025 13:07:13] "[36mGET /static/js/baseball_texture.jpg HTTP/1.1[0m" 304 -
+2025-03-11 13:22:49,654 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://172.16.71.56:5000
+2025-03-11 13:22:49,656 - INFO - [33mPress CTRL+C to quit[0m
+2025-03-11 13:22:53,645 - INFO - 172.16.71.56 - - [11/Mar/2025 13:22:53] "GET / HTTP/1.1" 200 -
+2025-03-11 13:22:53,939 - INFO - 172.16.71.56 - - [11/Mar/2025 13:22:53] "GET /static/js/baseball_animation.js HTTP/1.1" 200 -
+2025-03-11 13:22:53,960 - INFO - 172.16.71.56 - - [11/Mar/2025 13:22:53] "GET /static/css/bootstrap-icons.css HTTP/1.1" 200 -
+2025-03-11 13:22:53,967 - INFO - 172.16.71.56 - - [11/Mar/2025 13:22:53] "GET /static/css/mocaphelper.main.css HTTP/1.1" 200 -
+2025-03-11 13:22:53,967 - INFO - 172.16.71.56 - - [11/Mar/2025 13:22:53] "GET /static/css/bootstrap.min.css HTTP/1.1" 200 -
+2025-03-11 13:22:54,111 - INFO - 172.16.71.56 - - [11/Mar/2025 13:22:54] "GET /static/js/baseball_texture.jpg HTTP/1.1" 200 -
+2025-03-11 13:23:13,756 - INFO - Matched Pitchers in Heavy Pronation bucket: 200
+2025-03-11 13:23:13,756 - INFO - Matching Pitcher Details:
+2025-03-11 13:23:13,756 - INFO - Pitcher Match: {'pitcher': Decimal('573009'), 'release_speed': Decimal('90.1000'), 'release_spin_rate': Decimal('2136.0000'), 'vertical_break': Decimal('11.1600'), 'spin_efficiency': Decimal('0.96002200')}
+2025-03-11 13:23:13,757 - INFO - Pitcher Match: {'pitcher': Decimal('690986'), 'release_speed': Decimal('91.8000'), 'release_spin_rate': Decimal('2078.0000'), 'vertical_break': Decimal('9.6000'), 'spin_efficiency': Decimal('0.96006300')}
+2025-03-11 13:23:13,757 - INFO - Pitcher Match: {'pitcher': Decimal('518516'), 'release_speed': Decimal('89.8000'), 'release_spin_rate': Decimal('2268.0000'), 'vertical_break': Decimal('11.3064'), 'spin_efficiency': Decimal('0.96006300')}
+2025-03-11 13:23:13,757 - INFO - Pitcher Match: {'pitcher': Decimal('453385'), 'release_speed': Decimal('91.2000'), 'release_spin_rate': Decimal('2268.0000'), 'vertical_break': Decimal('8.4696'), 'spin_efficiency': Decimal('0.96008300')}
+2025-03-11 13:23:13,757 - INFO - Pitcher Match: {'pitcher': Decimal('519242'), 'release_speed': Decimal('92.0000'), 'release_spin_rate': Decimal('2266.0000'), 'vertical_break': Decimal('10.9200'), 'spin_efficiency': Decimal('0.96013000')}
+2025-03-11 13:23:13,757 - INFO - Pitcher Match: {'pitcher': Decimal('672552'), 'release_speed': Decimal('91.7000'), 'release_spin_rate': Decimal('2205.0000'), 'vertical_break': Decimal('12.2400'), 'spin_efficiency': Decimal('0.96013800')}
+2025-03-11 13:23:13,757 - INFO - Pitcher Match: {'pitcher': Decimal('640455'), 'release_speed': Decimal('91.1000'), 'release_spin_rate': Decimal('2017.0000'), 'vertical_break': Decimal('10.7472'), 'spin_efficiency': Decimal('0.96014300')}
+2025-03-11 13:23:13,758 - INFO - Pitcher Match: {'pitcher': Decimal('690986'), 'release_speed': Decimal('91.3000'), 'release_spin_rate': Decimal('2186.0000'), 'vertical_break': Decimal('7.6800'), 'spin_efficiency': Decimal('0.96018300')}
+2025-03-11 13:23:13,758 - INFO - Pitcher Match: {'pitcher': Decimal('543045'), 'release_speed': Decimal('91.2000'), 'release_spin_rate': Decimal('2263.0000'), 'vertical_break': Decimal('10.5012'), 'spin_efficiency': Decimal('0.96018600')}
+2025-03-11 13:23:13,758 - INFO - Pitcher Match: {'pitcher': Decimal('607536'), 'release_speed': Decimal('90.5000'), 'release_spin_rate': Decimal('2155.0000'), 'vertical_break': Decimal('12.2268'), 'spin_efficiency': Decimal('0.96021900')}
+2025-03-11 13:23:21,352 - INFO - Secondary pitch query took 7.52 seconds
+2025-03-11 13:23:21,353 - INFO - Found 30 potential secondary pitch types
+2025-03-11 13:23:21,364 - INFO - Pitch selection took 0.01 seconds
+2025-03-11 13:23:21,367 - INFO - Spin calculation took 0.00 seconds
+2025-03-11 13:23:21,370 - INFO - Total recommendation time: 20.20 seconds
+2025-03-11 13:23:21,397 - INFO - 172.16.71.56 - - [11/Mar/2025 13:23:21] "POST / HTTP/1.1" 200 -
+2025-03-11 13:23:21,431 - INFO - 172.16.71.56 - - [11/Mar/2025 13:23:21] "[36mGET /static/css/bootstrap-icons.css HTTP/1.1[0m" 304 -
+2025-03-11 13:23:21,432 - INFO - 172.16.71.56 - - [11/Mar/2025 13:23:21] "[36mGET /static/js/baseball_animation.js HTTP/1.1[0m" 304 -
+2025-03-11 13:23:21,433 - INFO - 172.16.71.56 - - [11/Mar/2025 13:23:21] "[36mGET /static/css/mocaphelper.main.css HTTP/1.1[0m" 304 -
+2025-03-11 13:23:21,435 - INFO - 172.16.71.56 - - [11/Mar/2025 13:23:21] "[36mGET /static/css/bootstrap.min.css HTTP/1.1[0m" 304 -
+2025-03-11 13:23:21,513 - INFO - 172.16.71.56 - - [11/Mar/2025 13:23:21] "[36mGET /static/js/baseball_texture.jpg HTTP/1.1[0m" 304 -
+2025-03-11 13:23:22,950 - INFO - 172.16.71.56 - - [11/Mar/2025 13:23:22] "POST / HTTP/1.1" 200 -
+2025-03-11 13:23:22,987 - INFO - 172.16.71.56 - - [11/Mar/2025 13:23:22] "[36mGET /static/css/bootstrap-icons.css HTTP/1.1[0m" 304 -
+2025-03-11 13:23:22,988 - INFO - 172.16.71.56 - - [11/Mar/2025 13:23:22] "[36mGET /static/css/mocaphelper.main.css HTTP/1.1[0m" 304 -
+2025-03-11 13:23:22,989 - INFO - 172.16.71.56 - - [11/Mar/2025 13:23:22] "[36mGET /static/js/baseball_animation.js HTTP/1.1[0m" 304 -
+2025-03-11 13:23:22,990 - INFO - 172.16.71.56 - - [11/Mar/2025 13:23:22] "[36mGET /static/css/bootstrap.min.css HTTP/1.1[0m" 304 -
+2025-03-11 13:23:23,048 - INFO - 172.16.71.56 - - [11/Mar/2025 13:23:23] "[36mGET /static/js/baseball_texture.jpg HTTP/1.1[0m" 304 -
+2025-03-11 13:23:28,642 - INFO - 172.16.71.56 - - [11/Mar/2025 13:23:28] "POST / HTTP/1.1" 200 -
+2025-03-11 13:23:28,670 - INFO - 172.16.71.56 - - [11/Mar/2025 13:23:28] "[36mGET /static/css/bootstrap.min.css HTTP/1.1[0m" 304 -
+2025-03-11 13:23:28,671 - INFO - 172.16.71.56 - - [11/Mar/2025 13:23:28] "[36mGET /static/js/baseball_animation.js HTTP/1.1[0m" 304 -
+2025-03-11 13:23:28,671 - INFO - 172.16.71.56 - - [11/Mar/2025 13:23:28] "[36mGET /static/css/mocaphelper.main.css HTTP/1.1[0m" 304 -
+2025-03-11 13:23:28,673 - INFO - 172.16.71.56 - - [11/Mar/2025 13:23:28] "[36mGET /static/css/bootstrap-icons.css HTTP/1.1[0m" 304 -
+2025-03-11 13:23:28,718 - INFO - 172.16.71.56 - - [11/Mar/2025 13:23:28] "[36mGET /static/js/baseball_texture.jpg HTTP/1.1[0m" 304 -
+2025-03-11 13:23:30,866 - INFO - 172.16.71.56 - - [11/Mar/2025 13:23:30] "POST / HTTP/1.1" 200 -
+2025-03-11 13:23:30,895 - INFO - 172.16.71.56 - - [11/Mar/2025 13:23:30] "[36mGET /static/css/mocaphelper.main.css HTTP/1.1[0m" 304 -
+2025-03-11 13:23:30,896 - INFO - 172.16.71.56 - - [11/Mar/2025 13:23:30] "[36mGET /static/css/bootstrap.min.css HTTP/1.1[0m" 304 -
+2025-03-11 13:23:30,900 - INFO - 172.16.71.56 - - [11/Mar/2025 13:23:30] "[36mGET /static/js/baseball_animation.js HTTP/1.1[0m" 304 -
+2025-03-11 13:23:30,902 - INFO - 172.16.71.56 - - [11/Mar/2025 13:23:30] "[36mGET /static/css/bootstrap-icons.css HTTP/1.1[0m" 304 -
+2025-03-11 13:23:30,951 - INFO - 172.16.71.56 - - [11/Mar/2025 13:23:30] "[36mGET /static/js/baseball_texture.jpg HTTP/1.1[0m" 304 -
+2025-03-11 13:23:32,998 - INFO - 172.16.71.56 - - [11/Mar/2025 13:23:32] "POST / HTTP/1.1" 200 -
+2025-03-11 13:23:33,040 - INFO - 172.16.71.56 - - [11/Mar/2025 13:23:33] "[36mGET /static/css/bootstrap.min.css HTTP/1.1[0m" 304 -
+2025-03-11 13:23:33,041 - INFO - 172.16.71.56 - - [11/Mar/2025 13:23:33] "[36mGET /static/js/baseball_animation.js HTTP/1.1[0m" 304 -
+2025-03-11 13:23:33,042 - INFO - 172.16.71.56 - - [11/Mar/2025 13:23:33] "[36mGET /static/css/bootstrap-icons.css HTTP/1.1[0m" 304 -
+2025-03-11 13:23:33,044 - INFO - 172.16.71.56 - - [11/Mar/2025 13:23:33] "[36mGET /static/css/mocaphelper.main.css HTTP/1.1[0m" 304 -
+2025-03-11 13:23:33,117 - INFO - 172.16.71.56 - - [11/Mar/2025 13:23:33] "[36mGET /static/js/baseball_texture.jpg HTTP/1.1[0m" 304 -
