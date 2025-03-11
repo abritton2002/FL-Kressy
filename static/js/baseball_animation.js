@@ -14,16 +14,15 @@ class BaseballAnimation {
 
         this.scene = new THREE.Scene();
 
-        // Use OrthographicCamera for consistent thickness
         const aspect = this.container.clientWidth / this.container.clientHeight;
-        const frustumSize = 10; // Adjust for zoom
+        const frustumSize = 10;
         this.camera = new THREE.OrthographicCamera(
-            -frustumSize * aspect / 2, // left
-            frustumSize * aspect / 2,  // right
-            frustumSize / 2,           // top
-            -frustumSize / 2,          // bottom
-            0.1,                       // near
-            1000                       // far
+            -frustumSize * aspect / 2,
+            frustumSize * aspect / 2,
+            frustumSize / 2,
+            -frustumSize / 2,
+            0.1,
+            1000
         );
 
         this.renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -78,7 +77,7 @@ class BaseballAnimation {
         this.isAnimating = false;
 
         this.line = null;
-        this.spinAxis = new THREE.Vector3(0, 0, 1);
+        this.spinAxis = new THREE.Vector3(0, 0, 1); // Initial spin axis
 
         this.initEventListeners();
     }
@@ -127,8 +126,15 @@ class BaseballAnimation {
                 y: event.clientY - this.previousMousePosition.y
             };
 
-            this.sphere.rotateOnWorldAxis(new THREE.Vector3(0, 1, 0), -deltaMove.x * 0.005);
-            this.sphere.rotateOnWorldAxis(new THREE.Vector3(1, 0, 0), -deltaMove.y * 0.005);
+            const qY = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 1, 0), -deltaMove.x * 0.005);
+            const qX = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(1, 0, 0), -deltaMove.y * 0.005);
+
+            this.sphere.quaternion.multiplyQuaternions(qY, this.sphere.quaternion);
+            this.sphere.quaternion.multiplyQuaternions(qX, this.sphere.quaternion);
+
+            this.spinAxis.applyQuaternion(qY);
+            this.spinAxis.applyQuaternion(qX);
+            this.createSpinAxisLine();
 
             this.renderer.render(this.scene, this.camera);
         }
@@ -147,18 +153,17 @@ class BaseballAnimation {
             this.line.material.dispose();
         }
 
-        const length = 100; // Spans the scene
-        const radius = 0.1; // Thickness (diameter = 0.2 units)
+        const length = 100;
+        const radius = 0.1;
         const geometry = new THREE.CylinderGeometry(radius, radius, length, 32);
-        const material = new THREE.MeshBasicMaterial({ color: 0xff0000 }); // Red
+        const material = new THREE.MeshBasicMaterial({ color: 0xff0000 });
         this.line = new THREE.Mesh(geometry, material);
 
-        // Align cylinder with spin axis
-        const defaultAxis = new THREE.Vector3(0, 1, 0); // Cylinder’s default Y-axis
+        const defaultAxis = new THREE.Vector3(0, 1, 0);
         const quaternion = new THREE.Quaternion().setFromUnitVectors(defaultAxis, this.spinAxis);
         this.line.quaternion.copy(quaternion);
 
-        this.line.position.set(0, 0, 0); // Centered at origin
+        this.line.position.copy(this.sphere.position);
 
         this.scene.add(this.line);
     }
@@ -180,15 +185,11 @@ class BaseballAnimation {
         const phi = phiInput ? parseFloat(phiInput.innerText) * (Math.PI / 180) : 0;
         const theta = thetaInput ? parseFloat(thetaInput.innerText) * (Math.PI / 180) : 0;
 
-        // Convert spherical coordinates to Cartesian
-        // Adjust the conversion to match the coordinate system in the paper
         this.spinAxis.set(
-            Math.sin(theta) * Math.cos(phi),    // x remains the same
-            Math.cos(theta),                    // y is now cos(theta)
-            Math.sin(theta) * Math.sin(phi)     // z is now sin(theta) * sin(phi)
+            Math.cos(theta) * Math.cos(phi), // x
+            Math.sin(theta),                 // y
+            Math.cos(theta) * Math.sin(phi)  // z
         );
-
-        // Normalize the spin axis
         this.spinAxis.normalize();
         this.createSpinAxisLine();
 
@@ -204,21 +205,17 @@ class BaseballAnimation {
         requestAnimationFrame(this.animate.bind(this));
 
         if (this.isAnimating) {
-            const rotationSpeedX = (this.spinRateX / 60) * (2 * Math.PI) / 15000;
-            const rotationSpeedY = (this.spinRateY / 60) * (2 * Math.PI) / 15000;
-            const rotationSpeedZ = (this.spinRateZ / 60) * (2 * Math.PI) / 15000;
-
-            const spinVector = new THREE.Vector3(
-                this.spinRateX, 
-                this.spinRateY, 
-                this.spinRateZ
+            const magnitude = Math.sqrt(
+                this.spinRateX * this.spinRateX +
+                this.spinRateY * this.spinRateY +
+                this.spinRateZ * this.spinRateZ
             );
-
-            console.log(rotationSpeedX);
-            console.log(spinVector)
-            this.sphere.rotateOnWorldAxis(new THREE.Vector3(1, 0, 0), rotationSpeedX);
-            this.sphere.rotateOnWorldAxis(new THREE.Vector3(0, 1, 0), rotationSpeedY);
-            this.sphere.rotateOnWorldAxis(new THREE.Vector3(0, 0, 1), rotationSpeedZ);
+            if (magnitude > 0) {
+                const axis = this.spinAxis.clone().normalize();
+                const rotationSpeed = (magnitude / 60) * (2 * Math.PI) / 15000;
+                // Reverse the rotation direction by negating the rotationSpeed
+                this.sphere.rotateOnWorldAxis(axis, -rotationSpeed);
+            }
 
             this.renderer.render(this.scene, this.camera);
         }
