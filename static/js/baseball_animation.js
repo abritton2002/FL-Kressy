@@ -185,6 +185,7 @@ class BaseballAnimation {
         const phi = phiInput ? parseFloat(phiInput.innerText) * (Math.PI / 180) : 0;
         const theta = thetaInput ? parseFloat(thetaInput.innerText) * (Math.PI / 180) : 0;
 
+        // Replaced lines 185-189 with the new spinAxis calculation
         this.spinAxis.set(
             Math.cos(theta) * Math.cos(phi), // x
             Math.sin(theta),                 // y
@@ -213,7 +214,6 @@ class BaseballAnimation {
             if (magnitude > 0) {
                 const axis = this.spinAxis.clone().normalize();
                 const rotationSpeed = (magnitude / 60) * (2 * Math.PI) / 15000;
-                // Reverse the rotation direction by negating the rotationSpeed
                 this.sphere.rotateOnWorldAxis(axis, -rotationSpeed);
             }
 
